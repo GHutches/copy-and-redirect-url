@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <script>
+      window.onload = function(){
+        const url = new URL(window.location.href)
+        var text_copy;
+        if(url.searchParams.has("copy")){
+          text_copy = url.searchParams.get("copy")
+          bodyText_copy = "Copied text \"" + text_copy + "\" to the clipboard."
+          var success_copy;
+          try {
+            navigator.clipboard.writeText(text_copy)
+            success_copy = true
+          } catch (e) {
+            bodyText_copy = "Failed to set text to clipboard. Copy it manually: " + text_copy
+            success_copy = false
+          }
+        } else {
+          bodyText_copy = "No \"copy\" parameter applied to URL."
+          success_copy = false
+        }
+        
+        const textnode_copy = document.createTextNode(bodyText_copy);
+        document.body.appendChild(textnode_copy);
+
+        if(success_copy){
+			var text_url;
+			if(url.searchParams.has("url")){
+			  text_url = url.searchParams.get("url")
+			  bodyText_url = "Redirecting you to: " + text_url
+			  var success_url;
+			  try {
+				window.location.replace(text_url);
+				success_url = true
+			  } catch (e) {
+				try {
+				  window.location.href = text_url;
+				  success_url = true
+				} catch (e) {
+				  bodyText_url = "Failed to redirect. Copy the url manually: " + text_url
+				  success_url = false
+				}
+			  }
+			} else {
+			  bodyText = "No \"url\" parameter applied to URL."
+			  success = false
+			}
+			
+			const textnode_url = document.createTextNode(bodyText_url);
+			document.body.appendChild(textnode_url);
+		
+		  window.setTimeout(async function(){
+			if (await navigator.clipboard.readText() == text_copy){
+			  window.close()
+			}
+		  }, 100)
+        }
+      }
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
